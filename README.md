@@ -3,16 +3,16 @@
 # TODO
 
 # Teleop
-- [ ] Basic tank drive
-- [ ] Basic arcade
-- [ ] Bellarmine arcade drive
+- [ ] Basic tank drive task
+- [ ] Basic arcade task
+- [ ] Bellarmine arcade drive task
 
 # Auto
 - [ ] Time based auto
-- [ ] Encoder auto
+- [ ] Encoder auto (focus on rather than time based)
 - [ ] Motion profile and PID
 
 # Intake / Outake
-- [ ] Intake, Spin Motors
-- [ ] Outake
-- [ ] Vision targeting for outake
+- [ ] Intake Task
+- [ ] Outake Task
+- [ ] Vision targeting for outake into fridge
