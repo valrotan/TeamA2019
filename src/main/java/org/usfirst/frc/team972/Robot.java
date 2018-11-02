@@ -13,8 +13,8 @@ public class Robot extends IterativeRobot {
 	WPI_TalonSRX left1;
 	WPI_TalonSRX right2;
 	WPI_TalonSRX left2;
-	//WPI_TalonSRX rollyGrabberMotorOne;
-	//WPI_TalonSRX rollyGrabberMotorTwo;
+	//WPI_TalonSRX intakeMotor1;
+	//WPI_TalonSRX intakeMotor2;
 	
 	//Groups for each side
 	SpeedControllerGroup leftGroup;
@@ -32,6 +32,12 @@ public class Robot extends IterativeRobot {
 	//Doubles for drive control
 	double power;
 	double turning;
+	double intakePower;
+	
+	//Booleans for reading buttons
+	boolean button0;
+	boolean button1;
+	boolean button2;
 	
 	//Runs once on robot start
 	public void robotInit() {
@@ -52,8 +58,8 @@ public class Robot extends IterativeRobot {
 		//encoderExample = new Encoder(1,2);
 		
 		//Intake motor initializations
-		//rollyGrabberMotorOne = new WPI_TalonSRX(7);
-		//rollyGrabberMotorTwo = new WPI_TalonSRX(8);
+		//intakeMotor1 = new WPI_TalonSRX(7);
+		//intakeMotor2 = new WPI_TalonSRX(8);
 		
 		//Joystick initialization
 		joy = new Joystick(0);
@@ -80,8 +86,21 @@ public class Robot extends IterativeRobot {
 		power = joy.getY();
 		turning = joy.getX();
 		
+		//Read buttons
+		button0 = joy.getRawButton(0);
+		button1 = joy.getRawButton(1);
+		button2 = joy.getRawButton(2);
+		
+		if (button0) {intakePower = -0.3; }
+		if (button1) {intakePower = 0.0; }
+		if (button2) {intakePower = 0.3; }
+		
 		//Run the differential drive in arcade mode
 		mainDrive.arcadeDrive(power, turning);
+		
+		//Linked intake code
+		//intakeMotor1.set(intakePower);
+		//intakeMotor2.set(intakePower);
 	}
 }
 
