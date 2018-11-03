@@ -1,108 +1,152 @@
 package org.usfirst.frc.team972;
-import edu.wpi.first.wpilibj.*;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+
+
+import org.usfirst.frc.team972.executor.TaskExecutor;
+import org.usfirst.frc.team972.motors.MainDriveTrain;
+import org.usfirst.frc.team972.motors.MechanismActuators;
+import org.usfirst.frc.team972.ui.Sensors;
+import org.usfirst.frc.team972.ui.UserInputGamepad;
+
+import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
+
+	//PDP: 30
+	//PCM: 40
 	
-	//Talon Declarations
-	WPI_TalonSRX right1;
-	WPI_TalonSRX left1;
-	WPI_TalonSRX right2;
-	WPI_TalonSRX left2;
-	//WPI_TalonSRX intakeMotor1;
-	//WPI_TalonSRX intakeMotor2;
+	public static final double WHEEL_BASE_WIDTH = 0.838;
+	public static final double REAL_TIME_LOOP_HZ = 200;
 	
-	//Groups for each side
-	SpeedControllerGroup leftGroup;
-	SpeedControllerGroup rightGroup;
+	TaskExecutor taskExecutor = new TaskExecutor();
+	MainDriveTrain driveTrain = new MainDriveTrain();
+	MechanismActuators mechanismMotors = new MechanismActuators();
+	Sensors sensors = new Sensors();
 	
-	//Differential Drive for main control
-	DifferentialDrive mainDrive;
+	UserInputGamepad uig = new UserInputGamepad(0, 1);
 	
-	//Sample encoder declaration
-	//Encoder encoderExample;
+	boolean firstTimeTeleop = false;
+	double realStartTime = 0;
+	double lastTime = 0;
 	
-	//Joystick Declaration
-	Joystick joy;
+	long controlLoopCycle = 0;
+	long moduloUpdateCycle = 200;
 	
-	//Doubles for drive control
-	double power;
-	double turning;
-	double intakePower;
-	
-	//Booleans for reading buttons
-	boolean button0;
-	boolean button1;
-	boolean button2;
-	
-	//Runs once on robot start
 	public void robotInit() {
-		//Initialization of left side
-		left1 = new WPI_TalonSRX(1);
-		left2 = new WPI_TalonSRX(2);
-		leftGroup = new SpeedControllerGroup(left1, left2);
+		System.out.println("Robot Init");
 		
-		//Initialization of right side
-		right1 = new WPI_TalonSRX(4);
-		right2 = new WPI_TalonSRX(5);
-		rightGroup = new SpeedControllerGroup(right1, right2);
+		sensors.SetupEncoderDriveTrain(2, 3, 0, 1);
 		
-		//Initialization of main drive
-		mainDrive = new DifferentialDrive(leftGroup, rightGroup);
-		
-		//Sample encoder initialization
-		//encoderExample = new Encoder(1,2);
-		
-		//Intake motor initializations
-		//intakeMotor1 = new WPI_TalonSRX(7);
-		//intakeMotor2 = new WPI_TalonSRX(8);
-		
-		//Joystick initialization
-		joy = new Joystick(0);
+
+		driveTrain.SetupProcedure(1, 2, 3, 4);
+
+		driveTrain.setTalonsPWM_follow();
+						
 	}
 	
-	//Runs once on auto start
 	public void autonomousInit() {
+		System.out.println("Auto Init");
 		
+		sensors.resetDriveEncoders();
+		
+		driveTrain.diagnosis();
+		driveTrain.setTalonsBrake();
+		driveTrain.shiftSolenoidDown();
+		 	
+		realStartTime = Timer.getFPGATimestamp();
+		
+		autoRealTimeControlLoop();
 	}
-	
-	//Runs repeatedly on auto period
+
 	public void autonomousPeriodic() {
-		
+		// do nothing because all of our auto is done in the real time control loop
 	}
-	
-	//Runs once on auto start
+
 	public void teleopInit() {
+		// in a real match, we do not want to zero in teleop
+		//sensors.resetElevatorEncoder();
+		//sensors.resetFlopEncoder();
 		
+		System.out.println("Teleop Init");
+		
+		sensors.resetDriveEncoders();
+		new Compressor(40).start();
+		
+		driveTrain.setTalonsPWM_follow();
+		driveTrain.diagnosis();
+		driveTrain.shiftSolenoidDown();
+		driveTrain.setTalonsBrake();
+		
+		taskExecutor.teleopStart(); //prepare for startup!
+		
+		realStartTime = Timer.getFPGATimestamp();
+		
+		teleopRealTimeController(); //begin 200hz control loop
+	}
+
+	public void disabledPeriodic() {
+		taskExecutor.stop();
+		taskExecutor.forceClearTasks();
+		driveTrain.stopCoast();
+		controlLoopCycle = 0;
 	}
 	
-	//Runs repeatedly on teleop period
 	public void teleopPeriodic() {
-		//Read joystick values
-		power = joy.getY();
-		turning = joy.getX();
+		//do nothing
+	}
+	
+	public void updateLoopStat(double current_time) {
+		if(controlLoopCycle % moduloUpdateCycle == 1) {
+			SmartDashboard.putNumber("control loop delta", current_time - lastTime);
+		}
 		
-		//Read buttons
-		button0 = joy.getRawButton(0);
-		button1 = joy.getRawButton(1);
-		button2 = joy.getRawButton(2);
-		
-		if (button0) {intakePower = -0.3; }
-		if (button1) {intakePower = 0.0; }
-		if (button2) {intakePower = 0.3; }
-		
-		//Run the differential drive in arcade mode
-		mainDrive.arcadeDrive(power, turning);
-		
-		//Linked intake code
-		//intakeMotor1.set(intakePower);
-		//intakeMotor2.set(intakePower);
+		lastTime = current_time;
+		controlLoopCycle++;
+	}
+	
+	public void autoRealTimeControlLoop() {
+		System.out.println("Control Loop (Autonomous) Starting");
+		while (this.isEnabled() && this.isAutonomous()) {
+			double current_time = Timer.getFPGATimestamp() - realStartTime;
+			taskExecutor.executeDT(current_time, false); //dont care about realtime locks, just run at full speed
+			try {
+				Thread.sleep((long) (1000 / REAL_TIME_LOOP_HZ));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			updateLoopStat(current_time);
+		}
+		taskExecutor.stop();
+	}
+
+	public void teleopRealTimeController() {
+		System.out.println("Control Loop (Teleop) Starting");
+		while (this.isEnabled() && this.isOperatorControl()) {
+			double current_time = Timer.getFPGATimestamp() - realStartTime;
+			if(this.isNewDataAvailable()) {
+				taskExecutor.executeDT(current_time, false);
+			} else {
+				taskExecutor.executeDT(current_time, true);
+			}
+			
+			try {
+				Thread.sleep((long) (1000 / REAL_TIME_LOOP_HZ));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			updateLoopStat(current_time);
+		}
+		taskExecutor.stop();
+	}
+	
+	public void testInit() {
+		System.out.println("no test");
 	}
 }
-
-
-
