@@ -3,22 +3,17 @@ package org.usfirst.frc.team972;
 
 
 import org.usfirst.frc.team972.executor.TaskExecutor;
+import org.usfirst.frc.team972.executor.TeleopTankDriveTask;
 import org.usfirst.frc.team972.motors.MainDriveTrain;
 import org.usfirst.frc.team972.motors.MechanismActuators;
 import org.usfirst.frc.team972.ui.Sensors;
 import org.usfirst.frc.team972.ui.UserInputGamepad;
 
-import com.kauailabs.navx.frc.AHRS;
-
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
-
-	//PDP: 30
-	//PCM: 40
 	
 	public static final double WHEEL_BASE_WIDTH = 0.838;
 	public static final double REAL_TIME_LOOP_HZ = 200;
@@ -75,12 +70,13 @@ public class Robot extends IterativeRobot {
 		System.out.println("Teleop Init");
 		
 		sensors.resetDriveEncoders();
-		new Compressor(40).start();
 		
 		driveTrain.setTalonsPWM_follow();
 		driveTrain.diagnosis();
 		driveTrain.shiftSolenoidDown();
 		driveTrain.setTalonsBrake();
+		
+		taskExecutor.addTask(new TeleopTankDriveTask(0, uig, driveTrain));
 		
 		taskExecutor.teleopStart(); //prepare for startup!
 		
