@@ -1,6 +1,8 @@
 package org.usfirst.frc.team972.ui;
 
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.Encoder;
+
+import static org.usfirst.frc.team972.util.Constants.*;
 
 public class Sensors {
 	
@@ -11,11 +13,11 @@ public class Sensors {
 		leftSideEncoderDriveTrain = new Encoder(l1, l2);
 		rightSideEncoderDriveTrain = new Encoder(r1, r2);
 		
-		leftSideEncoderDriveTrain.setDistancePerPulse(1);
-		rightSideEncoderDriveTrain.setDistancePerPulse(1);
+		leftSideEncoderDriveTrain.setDistancePerPulse(DISTANCE_PER_PULSE);
+		rightSideEncoderDriveTrain.setDistancePerPulse(DISTANCE_PER_PULSE);
 	}
 	
-	public void resetDriveEncoder() {
+	public void resetDriveEncoders() {
 		leftSideEncoderDriveTrain.reset();
 		rightSideEncoderDriveTrain.reset();
 	}
@@ -32,9 +34,8 @@ public class Sensors {
 		return rightSideEncoderDriveTrain.get();
 	}
 
-	public void resetDriveEncoders() {
-		leftSideEncoderDriveTrain.reset();
-		rightSideEncoderDriveTrain.reset();
+	public int getRightDriveEncoderSpeed() {
+		return (int)rightSideEncoderDriveTrain.getRate();
 	}
 
 }

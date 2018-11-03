@@ -1,7 +1,5 @@
 package org.usfirst.frc.team972;
 
-
-
 import org.usfirst.frc.team972.executor.TaskExecutor;
 import org.usfirst.frc.team972.executor.TeleopTankDriveTask;
 import org.usfirst.frc.team972.motors.MainDriveTrain;
