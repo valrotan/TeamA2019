@@ -4,7 +4,7 @@ public abstract class Task {
 	double executionTime = 0;
 	double realExecutionTime = 0;
 	boolean executed = false;
-	boolean autoRemove = false;
+	protected boolean autoRemove = false;
 	boolean allowedRun = false;
 	
 	public boolean realtimeTask = false;
