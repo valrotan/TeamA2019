@@ -15,7 +15,7 @@ public class Robot extends IterativeRobot {
 	
 	TaskExecutor taskExecutor = new TaskExecutor();
 	MainDriveTrain driveTrain = new MainDriveTrain();
-	MechanismActuators mechanismMotors = new MechanismActuators();
+	MechanismActuators mechanismActuators = new MechanismActuators();
 	Sensors sensors = new Sensors();
 	
 	UserInputGamepad uig = new UserInputGamepad(0, 1);
@@ -76,8 +76,10 @@ public class Robot extends IterativeRobot {
 		driveTrain.shiftSolenoidDown();
 		driveTrain.setTalonsBrake();
 		
-		taskExecutor.addTask(new TeleopTankDriveTask(0, uig, driveTrain));
+		// taskExecutor.addTask(new TeleopTankDriveTask(0, uig, driveTrain)); // CHANGE IF U WANT KEWL DRIVE
 		taskExecutor.addTask(new TeleopArcadeDriveTask(0, uig, driveTrain, sensors));
+		
+		taskExecutor.addTask(new TelelopIntakeTask(0, uig, mechanismActuators));
 		
 		taskExecutor.teleopStart(); //prepare for startup!
 		
