@@ -8,12 +8,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class MechanismActuators {
 	
-	public Spark intakeMotor;
+	private Spark intakeMotor;
 	
-	public WPI_TalonSRX intakeMotor1;
-	public WPI_TalonSRX intakeMotor2;
+	private WPI_TalonSRX intakeMotor1;
+	private WPI_TalonSRX intakeMotor2;
 	
-//	This method is for Val's team's intake
+//	This method is for team A's intake
 	public void setupIntakeMotors(int intakeMotorID_1, int intakeMotorID_2) {
 		intakeMotor1 = new WPI_TalonSRX(intakeMotorID_1);
 		intakeMotor2 = new WPI_TalonSRX(intakeMotorID_2);
