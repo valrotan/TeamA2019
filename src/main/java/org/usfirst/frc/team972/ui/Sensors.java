@@ -1,20 +1,32 @@
 package org.usfirst.frc.team972.ui;
 
-import edu.wpi.first.wpilibj.Encoder;
+import static org.usfirst.frc.team972.util.Constants.DISTANCE_PER_PULSE;
 
-import static org.usfirst.frc.team972.util.Constants.*;
+import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.Encoder;
 
 public class Sensors {
 	
 	Encoder leftSideEncoderDriveTrain;
 	Encoder rightSideEncoderDriveTrain;
 	
-	public void SetupEncoderDriveTrain(int l1, int l2, int r1, int r2) {
+	AHRS ahrs;
+	
+	public void setupEncoderDriveTrain(int l1, int l2, int r1, int r2) {
 		leftSideEncoderDriveTrain = new Encoder(l1, l2);
 		rightSideEncoderDriveTrain = new Encoder(r1, r2);
 		
 		leftSideEncoderDriveTrain.setDistancePerPulse(DISTANCE_PER_PULSE);
 		rightSideEncoderDriveTrain.setDistancePerPulse(DISTANCE_PER_PULSE);
+	}
+	
+	public void setupAHRS(AHRS _ahrs) {
+		ahrs = _ahrs;
+	}
+	
+	public AHRS getAHRS() {
+		return ahrs;
 	}
 	
 	public void resetDriveEncoders() {

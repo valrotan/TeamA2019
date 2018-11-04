@@ -33,7 +33,7 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		System.out.println("Robot Init");
 		
-		sensors.SetupEncoderDriveTrain(2, 3, 0, 1);
+		sensors.setupEncoderDriveTrain(2, 3, 0, 1);
 		
 
 		driveTrain.SetupProcedure(1, 2, 3, 4);
