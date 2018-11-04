@@ -1,9 +1,11 @@
 package org.usfirst.frc.team972;
 
 import org.usfirst.frc.team972.executor.TaskExecutor;
+import org.usfirst.frc.team972.executor.teleop.TeleopArcadeDriveTask;
 import org.usfirst.frc.team972.executor.teleop.TeleopTankDriveTask;
 import org.usfirst.frc.team972.motors.MainDriveTrain;
 import org.usfirst.frc.team972.motors.MechanismActuators;
+import org.usfirst.frc.team972.ui.IMU;
 import org.usfirst.frc.team972.ui.Sensors;
 import org.usfirst.frc.team972.ui.UserInputGamepad;
 
@@ -35,7 +37,9 @@ public class Robot extends IterativeRobot {
 		
 		sensors.setupEncoderDriveTrain(2, 3, 0, 1);
 		
-
+		sensors.setupAHRS(); // CHANGE IF USING DIFFERENT IMU
+//		sensors.setupADIS();
+		
 		driveTrain.SetupProcedure(1, 2, 3, 4);
 
 		driveTrain.setTalonsPWM_follow();
@@ -75,6 +79,7 @@ public class Robot extends IterativeRobot {
 		driveTrain.setTalonsBrake();
 		
 		taskExecutor.addTask(new TeleopTankDriveTask(0, uig, driveTrain));
+		taskExecutor.addTask(new TeleopArcadeDriveTask(0, uig, driveTrain, sensors));
 		
 		taskExecutor.teleopStart(); //prepare for startup!
 		
