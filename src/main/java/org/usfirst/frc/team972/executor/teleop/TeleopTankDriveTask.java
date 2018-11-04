@@ -4,8 +4,6 @@ import org.usfirst.frc.team972.executor.Task;
 import org.usfirst.frc.team972.motors.MainDriveTrain;
 import org.usfirst.frc.team972.ui.UserInputGamepad;
 
-import com.kauailabs.navx.frc.AHRS;
-
 public class TeleopTankDriveTask extends Task {
 
 	final int LEFT_DRIVE_AXIS = 1;

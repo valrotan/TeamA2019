@@ -5,7 +5,14 @@ plugins {
     id "eclipse"
 }
 
-//gradlerio.team = "1360"
+repositories {
+	mavenCentral()
+	maven {
+		url "https://jitpack.io"
+	}
+}
+
+//gradlerio.team = "972"
 def ROBOT_CLASS = "org.usfirst.frc.team972.Robot"
 
 def robotManifest = {
@@ -31,12 +38,11 @@ deploy {
     }
 }
 
-// Defining my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX)
-// and NavX.
 dependencies {
     compile wpilib()
     compile ctre()
     compile navx()
+    compile 'com.github.juchong:ADIS16448-RoboRIO-Driver:master-SNAPSHOT'
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')

@@ -3,11 +3,10 @@ package org.usfirst.frc.team972.executor.teleop;
 import org.usfirst.frc.team972.executor.Task;
 import org.usfirst.frc.team972.motionlib.PIDControl;
 import org.usfirst.frc.team972.motors.MainDriveTrain;
+import org.usfirst.frc.team972.ui.IMU;
 import org.usfirst.frc.team972.ui.Sensors;
 import org.usfirst.frc.team972.ui.UserInputGamepad;
 import org.usfirst.frc.team972.util.RobotLogger;
-
-import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -32,7 +31,7 @@ public class TeleopArcadeDriveTask extends Task {
 	MainDriveTrain driveTrain;
 	UserInputGamepad uig;
 
-	AHRS ahrs;
+	IMU imu;
 	int driveGearMode = 0;
 
 	double leftDrive = 0;
@@ -47,14 +46,14 @@ public class TeleopArcadeDriveTask extends Task {
 	double fakeDesiredAngle = 0;
 	double lastDesiredAngle = 0;
 
-	public TeleopArcadeDriveTask(double _executionTime, UserInputGamepad _uig, MainDriveTrain _driveTrain, AHRS _ahrs,
+	public TeleopArcadeDriveTask(double _executionTime, UserInputGamepad _uig, MainDriveTrain _driveTrain,
 			Sensors _sensors) {
 		super(_executionTime);
 		super.autoRemove = false;
 		uig = _uig;
 		driveTrain = _driveTrain;
-		ahrs = _ahrs;
 		sensors = _sensors;
+		imu = sensors.getIMU();
 
 		pidAngle = new PIDControl(0.025, 0, 0.05);
 		pidAngle.setOutputLimits(-0.08, 0.08);
@@ -73,7 +72,7 @@ public class TeleopArcadeDriveTask extends Task {
 
 	// this is teleopPeriodic
 	public void execute(double dt) {
-		double currentAngle = ahrs.getAngle();
+		double currentAngle = imu.getYaw();
 
 		if (uig.getDriverStick().getRawButton(TURBO_BUTTON)) {
 			driveTrain.voltageUnlock();
@@ -113,7 +112,7 @@ public class TeleopArcadeDriveTask extends Task {
 
 		if (steer_set == 0) {
 			if (calibratingAngle) {
-				fakeDesiredAngle = ahrs.getAngle();
+				fakeDesiredAngle = imu.getYaw();
 				double deltaDesired = fakeDesiredAngle - lastDesiredAngle;
 				if (Math.abs(deltaDesired) < 0.05) {
 					RobotLogger.toast("Teleop Arcade Close Loop Set: " + fakeDesiredAngle);
@@ -213,7 +212,7 @@ public class TeleopArcadeDriveTask extends Task {
 
 		SmartDashboard.putNumber("left real", leftRealDist);
 		SmartDashboard.putNumber("right real", rightRealDist);
-		SmartDashboard.putNumber("angle ahrs", currentAngle);
+		SmartDashboard.putNumber("angle imu", currentAngle);
 
 		driveTrain.driveSidesPWM(leftDrive + correctionAngleOutput, rightDrive - correctionAngleOutput);
 	}
