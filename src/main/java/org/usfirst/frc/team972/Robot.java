@@ -1,13 +1,8 @@
 package org.usfirst.frc.team972;
 
-import org.usfirst.frc.team972.executor.TaskExecutor;
-import org.usfirst.frc.team972.executor.teleop.TeleopArcadeDriveTask;
-import org.usfirst.frc.team972.executor.teleop.TeleopTankDriveTask;
-import org.usfirst.frc.team972.motors.MainDriveTrain;
-import org.usfirst.frc.team972.motors.MechanismActuators;
-import org.usfirst.frc.team972.ui.IMU;
-import org.usfirst.frc.team972.ui.Sensors;
-import org.usfirst.frc.team972.ui.UserInputGamepad;
+import org.usfirst.frc.team972.executor.*;
+import org.usfirst.frc.team972.motors.*;
+import org.usfirst.frc.team972.ui.*;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -54,7 +49,10 @@ public class Robot extends IterativeRobot {
 		driveTrain.diagnosis();
 		driveTrain.setTalonsBrake();
 		driveTrain.shiftSolenoidDown();
-		 	
+		
+//		Current numbers drive the robot forward at half speed for 5 seconds
+		taskExecutor.addTask(new AutoTimeBasedDriveTask(0, driveTrain, 5000.0, 0.5)); // Replace Time and Speed with desired numbers
+		
 		realStartTime = Timer.getFPGATimestamp();
 		
 		autoRealTimeControlLoop();
