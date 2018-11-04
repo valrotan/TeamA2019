@@ -1,6 +1,7 @@
 package org.usfirst.frc.team972;
 
 import org.usfirst.frc.team972.executor.TaskExecutor;
+import org.usfirst.frc.team972.executor.auto.AutoTimeBasedDriveTask;
 import org.usfirst.frc.team972.executor.teleop.TeleopTankDriveTask;
 import org.usfirst.frc.team972.motors.MainDriveTrain;
 import org.usfirst.frc.team972.motors.MechanismActuators;
@@ -50,7 +51,10 @@ public class Robot extends IterativeRobot {
 		driveTrain.diagnosis();
 		driveTrain.setTalonsBrake();
 		driveTrain.shiftSolenoidDown();
-		 	
+		
+//		Current numbers drive the robot forward at half speed for 5 seconds
+		taskExecutor.addTask(new AutoTimeBasedDriveTask(0, driveTrain, 5000.0, 0.5)); // Replace Time and Speed with desired numbers
+		
 		realStartTime = Timer.getFPGATimestamp();
 		
 		autoRealTimeControlLoop();

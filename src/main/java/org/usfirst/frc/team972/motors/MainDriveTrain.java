@@ -194,17 +194,17 @@ public class MainDriveTrain {
 		SmartDashboard.putNumber("average drivetrain current", currentSum / 6);
 	}
 
-	public void driveSidesPWM(double d, double e) {
-		SmartDashboard.putNumber("lo", d);
-		SmartDashboard.putNumber("ro", e);
+	public void driveSidesPWM(double leftSideSpeed, double rightSideSpeed) {
+		SmartDashboard.putNumber("lo", leftSideSpeed);
+		SmartDashboard.putNumber("ro", rightSideSpeed);
 
 		logOutputCurrent();
 
-		Left_1.set(d);
-		Left_2.set(d);
+		Left_1.set(leftSideSpeed);
+		Left_2.set(leftSideSpeed);
 
-		Right_1.set(-e);
-		Right_2.set(-e);
+		Right_1.set(-rightSideSpeed);
+		Right_2.set(-rightSideSpeed);
 
 	}
 }
