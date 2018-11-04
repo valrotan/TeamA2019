@@ -3,10 +3,40 @@ package org.usfirst.frc.team972.motors;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.*;
-
+import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class MechanismActuators {
+	
+	public Spark intakeMotor;
+	
+	public WPI_TalonSRX intakeMotor1;
+	public WPI_TalonSRX intakeMotor2;
+	
+//	This method is for Val's team's intake
+	public void setupIntakeMotors(int intakeMotorID_1, int intakeMotorID_2) {
+		intakeMotor1 = new WPI_TalonSRX(intakeMotorID_1);
+		intakeMotor2 = new WPI_TalonSRX(intakeMotorID_2);
+		
+		intakeMotor1.set(ControlMode.PercentOutput, 0);
+		intakeMotor2.set(ControlMode.PercentOutput, 0);
+	}
+	
+	public void runDoubleMotorIntake(double speed) {
+		intakeMotor1.set(ControlMode.PercentOutput, speed);
+		intakeMotor2.set(ControlMode.PercentOutput, -speed);
+	}
+	
+//	This is for team C's intake
+	public void setupIntakeMotors(int intakeMotorID) {
+		intakeMotor = new Spark(intakeMotorID);
+	}
+	
+	public void runSingleMotorIntake(double speed) {
+		intakeMotor.set(speed);
+	}
+	
+	
 //	
 //	final double MAX_INTAKE_DRAW = 15;
 //	
