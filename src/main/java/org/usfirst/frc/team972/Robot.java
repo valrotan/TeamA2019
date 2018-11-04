@@ -1,6 +1,8 @@
 package org.usfirst.frc.team972;
 
 import org.usfirst.frc.team972.executor.*;
+import org.usfirst.frc.team972.executor.auto.*;
+import org.usfirst.frc.team972.executor.teleop.*;
 import org.usfirst.frc.team972.motors.*;
 import org.usfirst.frc.team972.ui.*;
 
@@ -79,7 +81,7 @@ public class Robot extends IterativeRobot {
 		// taskExecutor.addTask(new TeleopTankDriveTask(0, uig, driveTrain)); // CHANGE IF U WANT KEWL DRIVE
 		taskExecutor.addTask(new TeleopArcadeDriveTask(0, uig, driveTrain, sensors));
 		
-		taskExecutor.addTask(new TelelopIntakeTask(0, uig, mechanismActuators));
+		taskExecutor.addTask(new TeleopIntakeTask(0, uig, mechanismActuators));
 		
 		taskExecutor.teleopStart(); //prepare for startup!
 		
